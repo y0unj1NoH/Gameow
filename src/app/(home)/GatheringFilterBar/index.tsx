@@ -55,7 +55,7 @@ export default function GatheringFilterBar({ filterCriteria, onFilterChange }: G
 	return (
 		<div className="flex w-full flex-col gap-4">
 			<GatheringTabs onTypeChange={handleTypeChange} button={<CreateGatheringButton />} />
-			<hr className="bg-primary-500 h-[1px] border-0" />
+			<hr className="bg-primary-500 h-[px] border-0" />
 
 			<div className="flex w-full justify-between">
 				<div className="flex gap-2">

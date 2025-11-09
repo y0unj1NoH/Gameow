@@ -3,11 +3,11 @@
 import Chip from '@/components/commons/Chip';
 import Tab from '@/components/commons/Tab';
 import { SUB_TYPE_OPTIONS, TYPE_OPTIONS } from '@/constants/options';
-import { Dispatch, SetStateAction, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 interface GatheringTabsProps {
-	/** 상위 컴포넌트에 선택된 모임 유형을 전달하는 함수 */
-	setSelectedType: Dispatch<SetStateAction<string>>;
+	/** 타입 변경 핸들러 */
+	onTypeChange: (type: string) => void;
 	/** 탭 오른쪽에 표시할 버튼 요소 (예: '모임 만들기' 버튼) */
 	button: React.ReactNode;
 }
@@ -19,19 +19,19 @@ interface GatheringTabsProps {
  *
  * @param {GatheringTabsProps} props - 선택된 타입을 업데이트하는 함수와 버튼 요소를 포함한 props
  */
-export default function GatheringTabs({ setSelectedType, button }: GatheringTabsProps) {
+export default function GatheringTabs({ onTypeChange, button }: GatheringTabsProps) {
 	const DEFAULT_TYPE = 'DALLAEMFIT';
 	const [type, setType] = useState<string>(DEFAULT_TYPE);
 	const [subType, setSubType] = useState<string>(DEFAULT_TYPE);
 
 	useLayoutEffect(() => {
-		setSelectedType(type);
+		onTypeChange(type);
 		if (type === DEFAULT_TYPE) setSubType(DEFAULT_TYPE);
-	}, [type, setSelectedType]);
+	}, [type, onTypeChange]);
 
 	useLayoutEffect(() => {
-		setSelectedType(subType);
-	}, [subType, setSelectedType]);
+		onTypeChange(subType);
+	}, [subType, onTypeChange]);
 
 	return (
 		<div className="flex flex-col gap-4">

@@ -8,7 +8,7 @@ import { useInfiniteGatheringsQuery } from '@/hooks/useInfiniteGatheringsQuery';
 import { Gathering } from '@/types/response/gatherings';
 import * as motion from 'motion/react-client';
 import Image from 'next/image';
-import { useDeferredValue, useMemo, useState } from 'react';
+import { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import CardList from './CardList';
 import CardSkeleton from './CardSkeleton';
 
@@ -28,6 +28,10 @@ export default function HomePage() {
 		date: undefined,
 		sort: 'newest'
 	});
+
+	const handleFilterChange = useCallback((criteria: Partial<FilterCriteria>) => {
+		setFilterCriteria(prev => ({ ...prev, ...criteria }));
+	}, []);
 
 	const deferredFilter = useDeferredValue(filterCriteria);
 	const queryString = useMemo(() => getGatheringQuery(deferredFilter), [deferredFilter]);
@@ -58,7 +62,7 @@ export default function HomePage() {
 			</div>
 			{/* // TODO: 리팩터링 */}
 			<div className="mb:gap-6 flex flex-1 flex-col gap-4">
-				<GatheringFilterBar setFilterCriteria={setFilterCriteria} />
+				<GatheringFilterBar filterCriteria={filterCriteria} onFilterChange={handleFilterChange} />
 				{hasData && (
 					<>
 						<CardList gatherings={data as Gathering[]} />

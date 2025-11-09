@@ -5,13 +5,13 @@ import BasicSelectButton from '@/components/commons/basic/BasicSelectButton';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { format } from 'date-fns';
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface SearchCalendarProps {
 	/** 선택된 날짜 (없을 수 있음) */
 	date?: Date;
 	/** 날짜 상태를 갱신하는 함수 */
-	setDate: Dispatch<SetStateAction<Date | undefined>>;
+	onDateChange: (date?: Date) => void;
 }
 
 /**
@@ -20,7 +20,7 @@ interface SearchCalendarProps {
  *
  * @param {SearchCalendarProps} props - 현재 선택된 날짜와 날짜 변경 함수를 포함한 props
  */
-export default function SearchCalendar({ date, setDate }: SearchCalendarProps) {
+export default function SearchCalendar({ date, onDateChange }: SearchCalendarProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [tempDate, setTempDate] = useState<Date | undefined>(date);
 
@@ -35,13 +35,13 @@ export default function SearchCalendar({ date, setDate }: SearchCalendarProps) {
 
 	const handleApply = () => {
 		if (!tempDate) return;
-		setDate(tempDate);
+		onDateChange(tempDate);
 		setIsOpen(false);
 	};
 
 	const handleReset = () => {
 		setTempDate(undefined);
-		setDate(undefined);
+		onDateChange(undefined);
 	};
 
 	useEffect(() => {

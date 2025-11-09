@@ -7,8 +7,7 @@ import SelectBox from '@/components/commons/SelectBox';
 import SortButton from '@/components/commons/SortButton';
 import { GENRE_OPTIONS, SORT_OPTIONS } from '@/constants/options';
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Controller, FormProvider, useForm, type UseFormRegisterReturn } from 'react-hook-form';
+import { useCallback } from 'react';
 import CreateGatheringButton from '../CreateGatheringButton';
 
 export interface FilterCriteria {
@@ -23,13 +22,10 @@ export interface FilterCriteria {
 }
 
 interface GatheringFilterBarProps {
-	/** 필터 조건을 상위 컴포넌트에 전달하는 함수 */
-	setFilterCriteria: Dispatch<SetStateAction<FilterCriteria>>;
-}
-
-interface SortFormValues {
-	/** 정렬 기준 */
-	sort: string;
+	/** 현재 필터 조건 */
+	filterCriteria: FilterCriteria;
+	/** 필터 조건 변경 핸들러 */
+	onFilterChange: (criteria: Partial<FilterCriteria>) => void;
 }
 
 /**
@@ -39,57 +35,40 @@ interface SortFormValues {
  *
  * @param {GatheringFilterBarProps} props - 필터 조건 갱신 함수를 포함한 props
  */
-export default function GatheringFilterBar({ setFilterCriteria }: GatheringFilterBarProps) {
-	const [selectedType, setSelectedType] = useState<string>('');
-	const [selectedLocation, setSelectedLocation] = useState<string | number>('');
-	const [selectedDate, setSelectedDate] = useState<Date>();
+export default function GatheringFilterBar({ filterCriteria, onFilterChange }: GatheringFilterBarProps) {
+	const handleTypeChange = useCallback((type: string) => {
+		onFilterChange({ type });
+	}, []);
 
-	const methods = useForm<SortFormValues>({
-		defaultValues: { sort: 'newest' }
-	});
-	const { control, watch } = methods;
-	const selectedSort = watch('sort');
+	const handleLocationChange = useCallback((location: string | number) => {
+		onFilterChange({ location });
+	}, []);
 
-	useEffect(() => {
-		setFilterCriteria({
-			type: selectedType,
-			location: selectedLocation,
-			date: selectedDate,
-			sort: selectedSort
-		});
-	}, [selectedType, selectedLocation, selectedDate, selectedSort, setFilterCriteria]);
+	const handleDateChange = useCallback((date?: Date) => {
+		onFilterChange({ date });
+	}, []);
+
+	const handleSortChange = useCallback((sort: string | number) => {
+		onFilterChange({ sort: String(sort) });
+	}, []);
 
 	return (
-		<FormProvider {...methods}>
-			<div className="flex w-full flex-col gap-4">
-				<GatheringTabs setSelectedType={setSelectedType} button={<CreateGatheringButton />} />
-				<hr className="bg-primary-500 h-[1px] border-0" />
+		<div className="flex w-full flex-col gap-4">
+			<GatheringTabs onTypeChange={handleTypeChange} button={<CreateGatheringButton />} />
+			<hr className="bg-primary-500 h-[1px] border-0" />
 
-				<div className="flex w-full justify-between">
-					<div className="flex gap-2">
-						<SelectBox options={GENRE_OPTIONS} placeholder="장르 전체" onChange={setSelectedLocation} />
-						<SearchCalendar date={selectedDate} setDate={setSelectedDate} />
-					</div>
-					<Controller
-						name="sort"
-						control={control}
-						render={({ field }) => (
-							<SortButton
-								options={SORT_OPTIONS}
-								defaultValue={field.value}
-								register={
-									{
-										name: field.name,
-										onChange: field.onChange,
-										onBlur: field.onBlur,
-										ref: field.ref
-									} as unknown as UseFormRegisterReturn
-								}
-							/>
-						)}
+			<div className="flex w-full justify-between">
+				<div className="flex gap-2">
+					<SelectBox
+						options={GENRE_OPTIONS}
+						placeholder="장르 전체"
+						defaultValue={String(filterCriteria.location)}
+						onChange={handleLocationChange}
 					/>
+					<SearchCalendar date={filterCriteria.date} onDateChange={handleDateChange} />{' '}
 				</div>
+				<SortButton options={SORT_OPTIONS} defaultValue={filterCriteria.sort} onChange={handleSortChange} />
 			</div>
-		</FormProvider>
+		</div>
 	);
 }

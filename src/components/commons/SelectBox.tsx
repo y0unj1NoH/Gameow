@@ -1,12 +1,10 @@
 'use client';
 
+import { cn } from '@/utils/cn';
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormRegisterReturn, useFormContext } from 'react-hook-form';
 import BasicDropbox, { OptionType } from './basic/BasicDropbox';
 import BasicSelectButton from './basic/BasicSelectButton';
-import { DropdownMenu } from '@/components/commons/GNB/DropdownMenu';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { cn } from '@/utils/cn';
 
 interface SelectBoxProps {
 	/** 선택 항목들의 배열 */

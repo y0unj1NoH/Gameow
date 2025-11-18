@@ -17,10 +17,10 @@ import { format } from 'date-fns';
  * @returns {string} URL 쿼리 문자열 (예: `type=SPORTS&location=1&sortBy=date&sortOrder=asc`)
  */
 export const getGatheringQuery = (filters: {
-	type?: string;
-	location?: string | number;
-	date?: Date;
-	sort?: string;
+	type: string | null;
+	location: string | number | null;
+	date: Date | null;
+	sort: string | null;
 	limit?: number;
 	offset?: number;
 }) => {

@@ -26,12 +26,13 @@ export default function GatheringTabs({ onTypeChange, button }: GatheringTabsPro
 
 	useLayoutEffect(() => {
 		onTypeChange(type);
-		if (type === DEFAULT_TYPE) setSubType(DEFAULT_TYPE);
-	}, [type, onTypeChange]);
+		if (type === DEFAULT_TYPE && subType !== DEFAULT_TYPE) setSubType(DEFAULT_TYPE);
+	}, [type]);
 
 	useLayoutEffect(() => {
+		if (type === subType) return;
 		onTypeChange(subType);
-	}, [subType, onTypeChange]);
+	}, [subType]);
 
 	return (
 		<div className="flex flex-col gap-4">

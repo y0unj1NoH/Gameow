@@ -9,9 +9,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 interface SearchCalendarProps {
 	/** 선택된 날짜 (없을 수 있음) */
-	date?: Date;
+	date: Date | null;
 	/** 날짜 상태를 갱신하는 함수 */
-	onDateChange: (date?: Date) => void;
+	onDateChange: (date: Date | null) => void;
 }
 
 /**
@@ -22,7 +22,7 @@ interface SearchCalendarProps {
  */
 export default function SearchCalendar({ date, onDateChange }: SearchCalendarProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [tempDate, setTempDate] = useState<Date | undefined>(date);
+	const [tempDate, setTempDate] = useState<Date | undefined>(date ?? undefined);
 
 	const formattedDate = useMemo(() => {
 		if (!date) return undefined;
@@ -41,7 +41,7 @@ export default function SearchCalendar({ date, onDateChange }: SearchCalendarPro
 
 	const handleReset = () => {
 		setTempDate(undefined);
-		onDateChange(undefined);
+		onDateChange(null);
 	};
 
 	useEffect(() => {
@@ -90,10 +90,10 @@ export default function SearchCalendar({ date, onDateChange }: SearchCalendarPro
 						fixedWeeks
 					/>
 					<div className="mt-2 flex w-full gap-3">
-						<BasicButton outlined onClick={handleReset} disabled={date === undefined}>
+						<BasicButton outlined onClick={handleReset} disabled={!date}>
 							초기화
 						</BasicButton>
-						<BasicButton onClick={handleApply} disabled={tempDate === undefined}>
+						<BasicButton onClick={handleApply} disabled={!tempDate}>
 							적용
 						</BasicButton>
 					</div>

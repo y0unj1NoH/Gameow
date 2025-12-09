@@ -2,7 +2,7 @@
 
 import GatheringFilterBar from '@/app/(home)/GatheringFilterBar';
 import { getGatheringQuery } from '@/utils/query';
-import { parseAsIsoDate, parseAsStringLiteral, throttle, useQueryState } from 'nuqs';
+import { parseAsIsoDate, parseAsStringLiteral, useQueryState } from 'nuqs';
 // TODO: motion import 최적화
 import { useInfiniteGatheringsQuery } from '@/hooks/useInfiniteGatheringsQuery';
 import { Gathering } from '@/types/response/gatherings';
@@ -18,12 +18,18 @@ type SortValue = (typeof SORT_VALUE)[number];
 export default function GatheringSection() {
 	const [type, setType] = useQueryState('type', {
 		defaultValue: 'DALLAEMFIT',
-		shallow: false,
-		limitUrlUpdates: throttle(200)
+		history: 'push',
+		clearOnDefault: false
 	});
-	const [location, setLocation] = useQueryState('location');
-	const [date, setDate] = useQueryState('date', parseAsIsoDate);
-	const [sort, setSort] = useQueryState('sort', parseAsStringLiteral(SORT_VALUE).withDefault('newest'));
+	const [location, setLocation] = useQueryState('location', {
+		history: 'push',
+		clearOnDefault: false
+	});
+	const [date, setDate] = useQueryState('date', parseAsIsoDate.withOptions({ history: 'push', clearOnDefault: false }));
+	const [sort, setSort] = useQueryState(
+		'sort',
+		parseAsStringLiteral(SORT_VALUE).withDefault('newest').withOptions({ history: 'push', clearOnDefault: false })
+	);
 
 	const handleTypeChange = useCallback(
 		(_type: string) => {
@@ -52,10 +58,10 @@ export default function GatheringSection() {
 	const queryString = useMemo(
 		() =>
 			getGatheringQuery({
-				type: type || 'DALLAEMFIT',
+				type: type,
 				location: location,
 				date: date,
-				sort: sort || 'newest'
+				sort: sort
 			}),
 		[type, location, date, sort]
 	);

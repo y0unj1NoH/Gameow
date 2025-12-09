@@ -71,10 +71,13 @@ export default function GatheringSection() {
 	return (
 		<div className="mb:gap-6 flex flex-1 flex-col gap-4">
 			<GatheringFilterBar
+				defaultType={type}
 				onTypeChange={handleTypeChange}
+				defaultLocation={location}
 				onLocatioChange={handleLocationChange}
 				date={date}
 				onDateChange={handleDateChange}
+				defaultSort={sort}
 				onSortChange={handleSortChange}
 			/>
 			{hasData && (

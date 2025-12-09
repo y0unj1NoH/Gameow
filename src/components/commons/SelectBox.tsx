@@ -67,13 +67,13 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 			placeholder = '선택하세요',
 			disabled = false,
 			children,
-			defaultValue,
+			defaultValue = '',
 			onChange
 		},
 		ref
 	) => {
 		const [isOpen, setIsOpen] = useState(false);
-		const [selectedValue, setSelectedValue] = useState<string | number>('');
+		const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
 		const containerRef = useRef<HTMLDivElement>(null);
 
 		const formContext = useFormContext();
@@ -148,7 +148,7 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 					ref={containerRef as React.RefObject<HTMLDivElement>}
 					options={options}
 					callbackOnclick={handleSelect}
-					selectedValue={selectedValue || defaultValue}
+					selectedValue={selectedValue}
 					isLarge={expanded}
 					className={cn(
 						'pc:left-0 transition-all duration-200 ease-out',

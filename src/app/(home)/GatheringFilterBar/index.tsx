@@ -21,14 +21,20 @@ export interface FilterCriteria {
 }
 
 interface GatheringFilterBarProps {
+	/** 디폴트 모임 타입 */
+	defaultType: string;
 	/** 타입 변경 핸들러 */
 	onTypeChange: (type: string) => void;
+	/** 디폴트 장소(장르) */
+	defaultLocation: string | number | null;
 	/** 장소(장르) 변경 핸들러 */
 	onLocatioChange: (location: string | number) => void;
 	/** 날짜 */
 	date: Date | null;
 	/** 날짜 변경 핸들러 */
 	onDateChange: (date: Date | null) => void;
+	/** 디폴트 정렬 기준 */
+	defaultSort: string;
 	/** 정렬 변경 핸들러 */
 	onSortChange: (sort: string | number) => void;
 }
@@ -42,23 +48,31 @@ interface GatheringFilterBarProps {
  * @param {GatheringFilterBarProps} props - 필터 조건 갱신 함수를 포함한 props
  */
 export default function GatheringFilterBar({
+	defaultType,
 	onTypeChange,
+	defaultLocation,
 	onLocatioChange,
 	date,
 	onDateChange,
+	defaultSort,
 	onSortChange
 }: GatheringFilterBarProps) {
 	return (
 		<div className="flex w-full flex-col gap-4">
-			<GatheringTabs onTypeChange={onTypeChange} button={<CreateGatheringButton />} />
+			<GatheringTabs defaultValue={defaultType} onTypeChange={onTypeChange} button={<CreateGatheringButton />} />
 			<hr className="bg-primary-500 h-[px] border-0" />
 
 			<div className="flex w-full justify-between">
 				<div className="flex gap-2">
-					<SelectBox options={GENRE_OPTIONS} placeholder="장르 전체" onChange={onLocatioChange} />
+					<SelectBox
+						options={GENRE_OPTIONS}
+						placeholder="장르 전체"
+						defaultValue={(defaultLocation ?? '') as string}
+						onChange={onLocatioChange}
+					/>
 					<SearchCalendar date={date} onDateChange={onDateChange} />{' '}
 				</div>
-				<SortButton options={SORT_OPTIONS} defaultValue="newest" onChange={onSortChange} />
+				<SortButton options={SORT_OPTIONS} defaultValue={defaultSort} onChange={onSortChange} />
 			</div>
 		</div>
 	);

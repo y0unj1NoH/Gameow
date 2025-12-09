@@ -3,9 +3,16 @@
 import Chip from '@/components/commons/Chip';
 import Tab from '@/components/commons/Tab';
 import { SUB_TYPE_OPTIONS, TYPE_OPTIONS } from '@/constants/options';
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
+
+const getDefaultType = (defaultValue: string): string => {
+	if (defaultValue === 'OFFICE_STRETCHING' || defaultValue === 'MINDFULNESS') return 'DALLAEMFIT';
+	return defaultValue;
+};
 
 interface GatheringTabsProps {
+	/** 디폴트 타입 (url 기준) */
+	defaultValue: string;
 	/** 타입 변경 핸들러 */
 	onTypeChange: (type: string) => void;
 	/** 탭 오른쪽에 표시할 버튼 요소 (예: '모임 만들기' 버튼) */
@@ -19,37 +26,46 @@ interface GatheringTabsProps {
  *
  * @param {GatheringTabsProps} props - 선택된 타입을 업데이트하는 함수와 버튼 요소를 포함한 props
  */
-export default function GatheringTabs({ onTypeChange, button }: GatheringTabsProps) {
-	const DEFAULT_TYPE = 'DALLAEMFIT';
-	const [type, setType] = useState<string>(DEFAULT_TYPE);
-	const [subType, setSubType] = useState<string>(DEFAULT_TYPE);
+export default function GatheringTabs({ defaultValue, onTypeChange, button }: GatheringTabsProps) {
+	const [type, setType] = useState<string>(getDefaultType(defaultValue));
+	const [subType, setSubType] = useState<string>(defaultValue);
+
+	const selectedType = useMemo(() => {
+		if (type === 'DALLAEMFIT') {
+			return subType || 'DALLAEMFIT';
+		}
+		return type;
+	}, [type, subType]);
 
 	useLayoutEffect(() => {
-		onTypeChange(type);
-		if (type === DEFAULT_TYPE && subType !== DEFAULT_TYPE) setSubType(DEFAULT_TYPE);
-	}, [type]);
-
-	useLayoutEffect(() => {
-		if (type === subType) return;
-		onTypeChange(subType);
-	}, [subType]);
+		onTypeChange(selectedType);
+	}, [selectedType]);
 
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="flex items-center justify-between">
-				<Tab options={TYPE_OPTIONS} selectedTab={type} onTabChange={setType} />
+				<Tab
+					options={TYPE_OPTIONS}
+					selectedTab={type}
+					onTabChange={value => {
+						setType(value);
+						if (value === 'WORKATION') setSubType('DALLAEMFIT');
+					}}
+				/>
 				{button}
 			</div>
 			{/* TODO: Activity로 변경 */}
 			<div className="flex gap-2">
-				{type === DEFAULT_TYPE ? (
+				{type === 'DALLAEMFIT' ? (
 					SUB_TYPE_OPTIONS.map(({ value, text, icon }) => (
 						<Chip
 							key={value}
 							text={text}
 							isActive={subType === value}
 							imgUrl={icon}
-							onClick={() => setSubType(value as string)}
+							onClick={() => {
+								setSubType(value as string);
+							}}
 						/>
 					))
 				) : (

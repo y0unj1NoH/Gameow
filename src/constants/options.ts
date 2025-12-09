@@ -6,16 +6,16 @@ export const TYPE_OPTIONS: TabOption[] = [
 	{ value: 'WORKATION', text: '교환/통신하기', icon: '/icons/exchange.svg' }
 ] as const;
 
-export const TABS: TabOption[] = [
-	{ value: 'JoinedGathering', text: '나의 크루' },
-	{ value: 'MyReview', text: '나의 리뷰' },
-	{ value: 'CreatedGathering', text: '내가 만든 크루' }
-] as const;
-
 export const SUB_TYPE_OPTIONS: TabOption[] = [
 	{ value: 'DALLAEMFIT', text: '전체' },
 	{ value: 'OFFICE_STRETCHING', text: '스팀', icon: '/icons/steam_logo.svg' },
 	{ value: 'MINDFULNESS', text: '온라인', icon: '/icons/online.svg' }
+] as const;
+
+export const TABS: TabOption[] = [
+	{ value: 'JoinedGathering', text: '나의 크루' },
+	{ value: 'MyReview', text: '나의 리뷰' },
+	{ value: 'CreatedGathering', text: '내가 만든 크루' }
 ] as const;
 
 export const GENRE_OPTIONS: OptionType[] = [

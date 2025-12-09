@@ -10,7 +10,6 @@ const LIMIT = 10;
 /**
  * useInfiniteGatheringsQuery
  * - queryString 기준으로 모임 데이터를 무한 스크롤로 가져오는 훅
- * - React Query + Intersection Observer 조합
  */
 export function useInfiniteGatheringsQuery(queryString: string) {
 	const { data, isLoading, fetchNextPage } = useInfiniteQuery({
@@ -19,7 +18,8 @@ export function useInfiniteGatheringsQuery(queryString: string) {
 		initialPageParam: 0,
 		getNextPageParam: (lastPage, pages) => (lastPage.length < LIMIT ? undefined : pages.length * LIMIT),
 		select: data => data.pages.flat() ?? [],
-		placeholderData: keepPreviousData
+		placeholderData: keepPreviousData,
+		staleTime: 1000 * 60 * 3
 	});
 
 	const { ref, inView } = useInView({

@@ -20,6 +20,7 @@ export interface FilterCriteria {
 	sort: string;
 }
 
+// TODO: default라고 지은 이름 수정 및 제어 컴포넌트로 최대한 고쳐보기
 interface GatheringFilterBarProps {
 	/** 디폴트 모임 타입 */
 	defaultType: string;
@@ -61,7 +62,6 @@ export default function GatheringFilterBar({
 		<div className="flex w-full flex-col gap-4">
 			<GatheringTabs defaultValue={defaultType} onTypeChange={onTypeChange} button={<CreateGatheringButton />} />
 			<hr className="bg-primary-500 h-[px] border-0" />
-
 			<div className="flex w-full justify-between">
 				<div className="flex gap-2">
 					<SelectBox
@@ -70,7 +70,7 @@ export default function GatheringFilterBar({
 						defaultValue={(defaultLocation ?? '') as string}
 						onChange={onLocatioChange}
 					/>
-					<SearchCalendar date={date} onDateChange={onDateChange} />{' '}
+					<SearchCalendar date={date} onDateChange={onDateChange} />
 				</div>
 				<SortButton options={SORT_OPTIONS} defaultValue={defaultSort} onChange={onSortChange} />
 			</div>

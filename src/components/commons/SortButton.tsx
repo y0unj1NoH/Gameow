@@ -23,12 +23,12 @@ interface SortButtonProps {
 /**
  * 정렬 옵션을 선택할 수 있는 드롭다운 버튼 컴포넌트
  */
-export default function SortButton({ options, register, defaultValue, className, onChange }: SortButtonProps) {
+export default function SortButton({ options, register, defaultValue = '', className, onChange }: SortButtonProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue ?? '');
+	const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const formContext = useFormContext();
-	const currentValue = register?.name ? formContext?.watch(register.name) : '';
+	const currentValue = register?.name ? formContext?.watch(register.name) : defaultValue;
 
 	const selectedOption = useMemo(
 		() => options.find(option => (selectedValue ? option.value === selectedValue : option.value === defaultValue)),

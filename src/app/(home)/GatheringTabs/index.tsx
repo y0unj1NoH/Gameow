@@ -30,11 +30,14 @@ export default function GatheringTabs({ defaultValue, onTypeChange, button }: Ga
 	const [type, setType] = useState<string>(getDefaultType(defaultValue));
 	const [subType, setSubType] = useState<string>(defaultValue);
 
+	useLayoutEffect(() => {
+		const newType = getDefaultType(defaultValue);
+		setType(newType);
+		setSubType(defaultValue);
+	}, [defaultValue]);
+
 	const selectedType = useMemo(() => {
-		if (type === 'DALLAEMFIT') {
-			return subType || 'DALLAEMFIT';
-		}
-		return type;
+		return type === 'DALLAEMFIT' ? subType : type;
 	}, [type, subType]);
 
 	useLayoutEffect(() => {

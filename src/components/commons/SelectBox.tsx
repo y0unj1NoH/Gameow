@@ -126,7 +126,6 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 		const handleToggle = useCallback(() => {
 			if (!disabled) {
 				setIsOpen(prev => !prev);
-				console.log('setIsOpen', isOpen);
 			}
 		}, [disabled]);
 

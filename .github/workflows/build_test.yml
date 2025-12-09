@@ -2,7 +2,7 @@ name: build test
 
 on:
   pull_request:
-    branches: [TD-178]
+    branches: [main]
     types: [opened, synchronize, reopened]
 
 concurrency:

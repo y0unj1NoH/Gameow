@@ -1,12 +1,10 @@
 'use client';
 
+import { cn } from '@/utils/cn';
 import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormRegisterReturn, useFormContext } from 'react-hook-form';
 import BasicDropbox, { OptionType } from './basic/BasicDropbox';
 import BasicSelectButton from './basic/BasicSelectButton';
-import { DropdownMenu } from '@/components/commons/GNB/DropdownMenu';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { cn } from '@/utils/cn';
 
 interface SelectBoxProps {
 	/** 선택 항목들의 배열 */
@@ -69,13 +67,13 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 			placeholder = '선택하세요',
 			disabled = false,
 			children,
-			defaultValue,
+			defaultValue = '',
 			onChange
 		},
 		ref
 	) => {
 		const [isOpen, setIsOpen] = useState(false);
-		const [selectedValue, setSelectedValue] = useState<string | number>('');
+		const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
 		const containerRef = useRef<HTMLDivElement>(null);
 
 		const formContext = useFormContext();
@@ -128,7 +126,6 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 		const handleToggle = useCallback(() => {
 			if (!disabled) {
 				setIsOpen(prev => !prev);
-				console.log('setIsOpen', isOpen);
 			}
 		}, [disabled]);
 
@@ -150,7 +147,7 @@ const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(
 					ref={containerRef as React.RefObject<HTMLDivElement>}
 					options={options}
 					callbackOnclick={handleSelect}
-					selectedValue={selectedValue || defaultValue}
+					selectedValue={selectedValue}
 					isLarge={expanded}
 					className={cn(
 						'pc:left-0 transition-all duration-200 ease-out',

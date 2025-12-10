@@ -7,8 +7,6 @@ import SelectBox from '@/components/commons/SelectBox';
 import SortButton from '@/components/commons/SortButton';
 import { GENRE_OPTIONS, SORT_OPTIONS } from '@/constants/options';
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Controller, FormProvider, useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import CreateGatheringButton from '../CreateGatheringButton';
 
 export interface FilterCriteria {
@@ -17,21 +15,32 @@ export interface FilterCriteria {
 	/** 선택된 지역 */
 	location: string | number;
 	/** 선택된 날짜 (선택되지 않을 수도 있음) */
-	date?: Date;
+	date: Date | null;
 	/** 선택된 정렬 기준 */
 	sort: string;
 }
 
+// TODO: default라고 지은 이름 수정 및 제어 컴포넌트로 최대한 고쳐보기
 interface GatheringFilterBarProps {
-	/** 필터 조건을 상위 컴포넌트에 전달하는 함수 */
-	setFilterCriteria: Dispatch<SetStateAction<FilterCriteria>>;
+	/** 디폴트 모임 타입 */
+	defaultType: string;
+	/** 타입 변경 핸들러 */
+	onTypeChange: (type: string) => void;
+	/** 디폴트 장소(장르) */
+	defaultLocation: string | number | null;
+	/** 장소(장르) 변경 핸들러 */
+	onLocatioChange: (location: string | number) => void;
+	/** 날짜 */
+	date: Date | null;
+	/** 날짜 변경 핸들러 */
+	onDateChange: (date: Date | null) => void;
+	/** 디폴트 정렬 기준 */
+	defaultSort: string;
+	/** 정렬 변경 핸들러 */
+	onSortChange: (sort: string | number) => void;
 }
 
-interface SortFormValues {
-	/** 정렬 기준 */
-	sort: string;
-}
-
+// TODO: 각 타입 지저분한거 정리하기 뭐는 undefined고 뭐는 ''이고 쿼리스트링은 또 null임
 /**
  * 모임 목록 상단의 필터 바 컴포넌트
  * 유형, 지역, 날짜, 정렬 옵션을 선택해 모임 목록을 필터링합니다.
@@ -39,57 +48,32 @@ interface SortFormValues {
  *
  * @param {GatheringFilterBarProps} props - 필터 조건 갱신 함수를 포함한 props
  */
-export default function GatheringFilterBar({ setFilterCriteria }: GatheringFilterBarProps) {
-	const [selectedType, setSelectedType] = useState<string>('');
-	const [selectedLocation, setSelectedLocation] = useState<string | number>('');
-	const [selectedDate, setSelectedDate] = useState<Date>();
-
-	const methods = useForm<SortFormValues>({
-		defaultValues: { sort: 'newest' }
-	});
-	const { control, watch } = methods;
-	const selectedSort = watch('sort');
-
-	useEffect(() => {
-		setFilterCriteria({
-			type: selectedType,
-			location: selectedLocation,
-			date: selectedDate,
-			sort: selectedSort
-		});
-	}, [selectedType, selectedLocation, selectedDate, selectedSort, setFilterCriteria]);
-
+export default function GatheringFilterBar({
+	defaultType,
+	onTypeChange,
+	defaultLocation,
+	onLocatioChange,
+	date,
+	onDateChange,
+	defaultSort,
+	onSortChange
+}: GatheringFilterBarProps) {
 	return (
-		<FormProvider {...methods}>
-			<div className="flex w-full flex-col gap-4">
-				<GatheringTabs setSelectedType={setSelectedType} button={<CreateGatheringButton />} />
-				<hr className="bg-primary-500 h-[1px] border-0" />
-
-				<div className="flex w-full justify-between">
-					<div className="flex gap-2">
-						<SelectBox options={GENRE_OPTIONS} placeholder="장르 전체" onChange={setSelectedLocation} />
-						<SearchCalendar date={selectedDate} setDate={setSelectedDate} />
-					</div>
-					<Controller
-						name="sort"
-						control={control}
-						render={({ field }) => (
-							<SortButton
-								options={SORT_OPTIONS}
-								defaultValue={field.value}
-								register={
-									{
-										name: field.name,
-										onChange: field.onChange,
-										onBlur: field.onBlur,
-										ref: field.ref
-									} as unknown as UseFormRegisterReturn
-								}
-							/>
-						)}
+		<div className="flex w-full flex-col gap-4">
+			<GatheringTabs defaultValue={defaultType} onTypeChange={onTypeChange} button={<CreateGatheringButton />} />
+			<hr className="bg-primary-500 h-[px] border-0" />
+			<div className="flex w-full justify-between">
+				<div className="flex gap-2">
+					<SelectBox
+						options={GENRE_OPTIONS}
+						placeholder="장르 전체"
+						defaultValue={(defaultLocation ?? '') as string}
+						onChange={onLocatioChange}
 					/>
+					<SearchCalendar date={date} onDateChange={onDateChange} />
 				</div>
+				<SortButton options={SORT_OPTIONS} defaultValue={defaultSort} onChange={onSortChange} />
 			</div>
-		</FormProvider>
+		</div>
 	);
 }

@@ -1,7 +1,7 @@
+import { cn } from '@/utils/cn';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useFormContext, UseFormRegisterReturn } from 'react-hook-form';
-import BasicDropbox, { OptionType } from './basic/BasicDropbox';
-import { cn } from '@/utils/cn';
+import { OptionType } from './basic/BasicDropbox';
 import { DropdownMenu } from './GNB/DropdownMenu';
 
 /**
@@ -16,34 +16,19 @@ interface SortButtonProps {
 	register?: UseFormRegisterReturn;
 	/** 기본 선택값 */
 	defaultValue?: string;
+	/** 외부로 선택 변경을 알리는 핸들러 */
+	onChange?: (value: string | number) => void;
 }
 
 /**
- * 정렬 옵션을 선택할 수 있는 드롭다운 버튼 컴포넌트(selectBox와는 icon,placeholder 등이 사소하게 달라서 아예 새로 생성했습니다)
- *
- * @description
- * - 정렬 아이콘과 함께 선택된 옵션을 표시
- * - BasicDropbox 컴포넌트를 사용하여 옵션 목록 표시
- * - React Hook Form과 통합 가능
- * - 외부 클릭 시 자동으로 드롭다운 닫힘
- *
- * @example
- * ```tsx
- * <SortButton
- *   options={[
- *     { value: 'newest', text: '최신순' },
- *     { value: 'popular', text: '인기순' }
- *   ]}
- *   defaultValue="newest"
- * />
- * ```
+ * 정렬 옵션을 선택할 수 있는 드롭다운 버튼 컴포넌트
  */
-export default function SortButton({ options, register, defaultValue, className }: SortButtonProps) {
+export default function SortButton({ options, register, defaultValue = '', className, onChange }: SortButtonProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [selectedValue, setSelectedValue] = useState<string | number>('');
+	const [selectedValue, setSelectedValue] = useState<string | number>(defaultValue);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const formContext = useFormContext();
-	const currentValue = register?.name ? formContext?.watch(register.name) : '';
+	const currentValue = register?.name ? formContext?.watch(register.name) : defaultValue;
 
 	const selectedOption = useMemo(
 		() => options.find(option => (selectedValue ? option.value === selectedValue : option.value === defaultValue)),
@@ -79,18 +64,20 @@ export default function SortButton({ options, register, defaultValue, className 
 					target: { name: register.name, value: optionValue }
 				});
 			}
+
+			if (onChange) {
+				onChange(optionValue);
+			}
 		},
-		[register]
+		[register, onChange]
 	);
 
 	return (
-		<div className="relative">
+		<div className="relative" ref={containerRef}>
 			<DropdownMenu>
 				<DropdownMenu.Trigger>
 					<button
-						onClick={() => {
-							setIsOpen(!isOpen);
-						}}
+						onClick={() => setIsOpen(prev => !prev)}
 						className={cn(
 							'mb:w-auto mb:px-3 mb:py-2 relative box-border flex w-[36px]',
 							'[text-shadow:0_0_4px_#e6fffa,0_0_0px_#e6fffa,0_0_0px_#e6fffa,0_0_40px_#e6fffa]',
@@ -102,6 +89,7 @@ export default function SortButton({ options, register, defaultValue, className 
 						<span className="mb:inline font-gray-800 hidden text-[14px]">{selectedOption && selectedOption.text}</span>
 					</button>
 				</DropdownMenu.Trigger>
+
 				<DropdownMenu.Content options={options} onClick={handleSelect} />
 			</DropdownMenu>
 		</div>

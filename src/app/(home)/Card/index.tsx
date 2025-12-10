@@ -7,7 +7,7 @@ import Tag from '@/components/commons/Tag';
 import { GENRE_BY_LOCATION, type Location } from '@/constants/options';
 import type { Gathering } from '@/types/response/gatherings';
 import { formatDateAndTime, getDeadlineLabel } from '@/utils/date';
-import * as motion from 'motion/react-client';
+// import * as motion from 'motion/react-client';
 import Image from 'next/image';
 
 interface CardProps {
@@ -27,12 +27,13 @@ export default function Card({ gathering, onClick }: CardProps) {
 	const deadlineLabel = getDeadlineLabel(registrationEnd);
 
 	return (
-		<motion.div
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			transition={{
-				duration: 0.8
-			}}
+		<div
+			// <motion.div
+			// 	initial={{ opacity: 0 }}
+			// 	animate={{ opacity: 1 }}
+			// 	transition={{
+			// 		duration: 0.8
+			// 	}}
 			onClick={onClick}
 			className="tb:gap-0 tb:h-[156px] border-primary-500 duration-0.5 tb:flex-row hover:shadow-primary-500/50 flex h-[316px] cursor-pointer flex-col gap-4 overflow-hidden rounded-3xl border-2 transition-shadow hover:shadow-lg">
 			<div className="tb:w-[280px] relative block h-[156px] w-full overflow-hidden">
@@ -63,6 +64,7 @@ export default function Card({ gathering, onClick }: CardProps) {
 					/>
 				</div>
 			</div>
-		</motion.div>
+		</div>
+		// </motion.div>
 	);
 }
